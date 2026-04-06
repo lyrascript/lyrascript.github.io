@@ -3,218 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Lyra Scratchpad</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: monospace;
-            background: #0f1115;
-            color: #e6e6e6;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            padding: 10px 16px;
-            background: #161a22;
-            border-bottom: 1px solid #2a2f3a;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header h1 {
-            font-size: 14px;
-            margin: 0;
-            opacity: 0.8;
-        }
-
-        header h1 > img {
-            vertical-align: middle;
-            width: 24px;
-            height: 24px;
-        }
-
-        button {
-            background: #2d6cdf;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: monospace;
-        }
-
-        button:hover {
-            background: #3a7bfd;
-        }
-
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            min-height: 0;
-        }
-
-        .editor {
-            border-right: 1px solid #2a2f3a;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-
-        .editor textarea {
-            flex: 1 1 auto;
-            min-height: 220px;
-            background: #0f1115;
-            color: #e6e6e6;
-            border: none;
-            padding: 12px;
-            resize: none;
-            outline: none;
-            font-family: monospace;
-            font-size: 14px;
-        }
-
-        .preview {
-            min-height: 220px;
-            border-top: 1px solid #2a2f3a;
-            background: #f4efe5;
-            color: #111;
-            overflow: auto;
-            padding: 14px;
-        }
-
-        .preview-header {
-            margin: 0 0 10px 0;
-            font-size: 12px;
-            color: #5f5a52;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        #preview {
-            min-height: 160px;
-        }
-
-        .preview-empty {
-            color: #7a6d5b;
-            font-style: italic;
-        }
-
-        #preview .box {
-            padding: 14px 16px;
-            border: 1px solid #d7cab3;
-            border-radius: 10px;
-            background: #fffaf0;
-            cursor: pointer;
-        }
-
-        #preview button {
-            background: #1f5bd8;
-            border-radius: 8px;
-            padding: 8px 14px;
-        }
-
-        #preview h1,
-        #preview h2,
-        #preview h3,
-        #preview p,
-        #preview b,
-        #preview div {
-            font-family: Georgia, "Times New Roman", serif;
-        }
-
-        .output {
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-
-        .panel {
-            flex: 1;
-            padding: 10px;
-            overflow: auto;
-            border-bottom: 1px solid #2a2f3a;
-            min-height: 0;
-        }
-
-        .panel:last-child {
-            border-bottom: none;
-        }
-
-        .panel h2 {
-            margin: 0 0 6px 0;
-            font-size: 12px;
-            opacity: 0.6;
-        }
-
-        .stdout {
-            white-space: pre-wrap;
-            color: #c6f68d;
-        }
-
-        .stderr {
-            white-space: pre-wrap;
-            color: #ff6b6b;
-        }
-
-        #ast {
-            font-size: 13px;
-            line-height: 1.45;
-        }
-
-        .ast-node {
-            position: relative;
-        }
-
-        .ast-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-height: 22px;
-            padding: 1px 6px 1px 4px;
-            border-radius: 4px;
-            user-select: none;
-        }
-
-        .ast-row:hover {
-            background: #171c26;
-        }
-
-        .ast-toggle {
-            width: 12px;
-            color: #7f8ea3;
-            cursor: pointer;
-            flex: 0 0 12px;
-            text-align: center;
-        }
-
-        .ast-toggle.is-leaf {
-            visibility: hidden;
-            cursor: default;
-        }
-
-        .ast-label {
-            color: #9cdcfe;
-        }
-
-        .ast-children {
-            margin-left: 12px;
-            padding-left: 12px;
-            border-left: 1px solid #2a2f3a;
-            display: none;
-        }
-
-        .ast-children.is-open {
-            display: block;
-        }
-
-        .ast-meta {
-            color: #7f8ea3;
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/scratchpad.css">
 </head>
 <body>
 
@@ -223,65 +12,41 @@
         <img src="./../icons/ls.svg" alt="LyraScript">
         Lyra Scratchpad
     </h1>
-    <button id="run-button">Run (Ctrl + Enter)</button>
+    <div class="header-actions">
+        <div class="file-status" id="file-status"></div>
+        <button id="open-button">Open</button>
+        <button id="save-button">Save</button>
+        <button id="save-as-button">Save As</button>
+        <button id="run-button">Run (Ctrl + Enter)</button>
+    </div>
 </header>
 
 <main>
     <div class="editor">
-        <textarea aria-label="editor" id="editor" spellcheck="false">
-class Toggle {
-
-    private visible: boolean = true;
-
-    public render(): VNode {
-        if (this.visible) {
-            return vdom
-                <div class="box" onClick={e -> this.visible = false}>
-                    Click to hide me
-                </div>;
-        }
-
-        return vdom
-            <div class="box" onClick={e -> this.visible = true}>
-                Hidden. Click to show me again.
-            </div>;
-    }
-}
-
-class Counter {
-
-    private count: number = 0;
-
-    public render(): VNode {
-        return vdom
-            <div>
-                <p>Count: {this.count}</p>
-                <button onClick={e -> this.count = this.count + 1}>
-                    +1
-                </button>
-            </div>;
-    }
-}
-
-class App {
-
-    public render(): VNode {
-        return vdom
-            <div>
-                <h1>Lyra Scratchpad</h1>
-                <p>Interactive preview directly below the editor.</p>
-                <Toggle/>
-                <Counter/>
-            </div>;
-    }
-}
-
-class Program {
-    public render(): VNode {
-        return vdom <App/>;
-    }
-}
+        <div class="example-tabs">
+            <div class="example-tabs-label">Examples</div>
+            <div class="example-tabs-list" id="example-tabs"></div>
+            <div class="run-mode-toggle" id="run-mode-toggle">
+                <button class="run-mode-button" data-run-mode="program" type="button">Program</button>
+                <button class="run-mode-button" data-run-mode="tests" type="button">Tests</button>
+            </div>
+        </div>
+        <div class="editor-shell">
+            <div aria-hidden="true" class="editor-gutter" id="editor-line-numbers"></div>
+            <div class="editor-stage">
+                <pre aria-hidden="true" class="editor-highlight" id="editor-highlight"></pre>
+                <textarea aria-label="editor" id="editor" spellcheck="false">
 		</textarea>
+            </div>
+        </div>
+        <div
+            aria-label="Resize preview"
+            aria-orientation="horizontal"
+            class="preview-resize-handle"
+            id="preview-resize-handle"
+            role="separator"
+            tabindex="0"
+        ></div>
         <div class="preview">
             <div class="preview-header">Live Preview</div>
             <div id="preview"></div>
@@ -289,19 +54,43 @@ class Program {
     </div>
 
     <div class="output">
-        <div class="panel">
+        <div class="panel" id="output-panel-stdout">
             <h2>Output</h2>
             <div class="stdout" id="stdout"></div>
         </div>
-        <div class="panel">
+        <div
+            aria-label="Resize output panels"
+            aria-orientation="horizontal"
+            class="panel-resize-handle"
+            data-panel-handle="stdout-stderr"
+            role="separator"
+            tabindex="0"
+        ></div>
+        <div class="panel" id="output-panel-stderr">
             <h2>Errors</h2>
             <div class="stderr" id="stderr"></div>
         </div>
-        <div class="panel">
+        <div
+            aria-label="Resize output panels"
+            aria-orientation="horizontal"
+            class="panel-resize-handle"
+            data-panel-handle="stderr-ast"
+            role="separator"
+            tabindex="0"
+        ></div>
+        <div class="panel" id="output-panel-ast">
             <h2>AST</h2>
             <div id="ast"></div>
         </div>
-        <div class="panel">
+        <div
+            aria-label="Resize output panels"
+            aria-orientation="horizontal"
+            class="panel-resize-handle"
+            data-panel-handle="ast-tokens"
+            role="separator"
+            tabindex="0"
+        ></div>
+        <div class="panel" id="output-panel-tokens">
             <h2>Tokens</h2>
             <pre id="tokens"></pre>
         </div>
@@ -309,7 +98,7 @@ class Program {
 </main>
 
 <script type="module">
-	import {bootstrapScratchpad} from "/dist/scratchpad.js";
+	import {bootstrapScratchpad} from "../dist/scratchpad.js";
 
 	bootstrapScratchpad();
 </script>
